@@ -60,7 +60,7 @@ app.post("/urls/:shortURL/delete", (req,res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("urls_register",{email:''});
+  res.render("urls_register", {email:''});
 });
 
 app.post("/register", (req,res) => {
@@ -75,6 +75,10 @@ app.post("/register", (req,res) => {
   users[userId] = { id: userId, email, password};
   res.cookie('user_id', userId);
   res.redirect("/urls");
+});
+
+app.get("/login", (req, res) => {
+  res.render("urls_login", {email:''});
 });
 
 app.post("/login", (req, res) => {
