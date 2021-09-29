@@ -16,6 +16,7 @@
     <li class="my-auto">|</li>
     <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
     <%} else {%>
+    <form method="POST" action="/logout"> 
       <p class="my-auto">Logged In As: <%=email%></p>
       <button type="submit" class="btn btn-outline-dark ml-2">Logout</button>
     </form>

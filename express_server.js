@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const { urlDatabase, users } = require("./database");
-const { generateRandomString, checkEmail } = require("./helper");
+const { generateRandomString, findUserByEmail } = require("./helper");
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -20,7 +20,6 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  console.log(users[req.cookies['user_id']].email);
   res.render("urls_new", { email: users[req.cookies['user_id']].email });
 });
 
@@ -68,7 +67,7 @@ app.post("/register", (req,res) => {
   if (email === '' || password === '') {
     return res.status(400).send("Enter valid Email/Password");
   } 
-  if (checkEmail(email)) {
+  if (findUserByEmail(email)) {
      return res.status(400).send("Email already exists.");
   }
   let userId = generateRandomString();
@@ -82,12 +81,19 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+  const {email, password} = req.body;
+  let userId = findUserByEmail(email);
+  if (!userId) return res.status(403).send("Wrong Credentials");
+  if (password !== users[userId].password) {
+    return res.status(403).send("Wrong Credentials");
+  }
+  res.cookie('user_id', userId);
   res.redirect("/urls");
 });
 
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id');
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 app.listen(PORT, () => {

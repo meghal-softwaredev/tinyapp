@@ -5,11 +5,11 @@ const generateRandomString = function() {
   return uuid().substr(0,6);
 };
 
-const checkEmail = function(email) {
+const findUserByEmail = function(email) {
   for (let user in users) {
-    if (email === users[user].email) return true;
+    if (email === users[user].email) return user;
   }
   return false;
 };
 
-module.exports = { generateRandomString, checkEmail };
+module.exports = { generateRandomString, findUserByEmail };
