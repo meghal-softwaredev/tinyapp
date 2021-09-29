@@ -11,13 +11,13 @@
       </div>
     </div>
     <ul class="navbar-nav mr-auto">
-    <% if(!email) {%>
+    <% if(!user) {%>
     <li class="nav-item"><a class="nav-link" href="/login">Login</a></li> 
     <li class="my-auto">|</li>
     <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
     <%} else {%>
     <form method="POST" action="/logout"> 
-      <p class="my-auto">Logged In As: <%=email%></p>
+      <p class="my-auto">Logged In As: <%=user.email%></p>
       <button type="submit" class="btn btn-outline-dark ml-2">Logout</button>
     </form>
     <% } %>
