@@ -70,6 +70,10 @@ app.post("/urls/:shortURL/delete", (req,res) => {
   res.redirect("/urls");
 });
 
+app.get("/register", (req, res) => {
+  res.render("urls_register", { username: req.cookies["username"] });
+});
+
 app.post("/login", (req, res) => {
   let username = req.body.username;
   res.cookie('username', username);
