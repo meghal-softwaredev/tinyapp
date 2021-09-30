@@ -1,5 +1,5 @@
 const uuid = require('uuid').v4;
-const { users } = require('./database');
+const { users, urlDatabase} = require('./database');
 
 //Generates random string of length 6 for unique id
 const generateRandomString = function() {
@@ -14,4 +14,14 @@ const findUserByEmail = function(email) {
   return false;
 };
 
-module.exports = { generateRandomString, findUserByEmail};
+const urlsForUser = function(uid) {
+  let result = {};
+  for (let url in urlDatabase) {
+    if (uid === urlDatabase[url].userID) {
+      result[url] = urlDatabase[url].longURL;
+    }
+  }
+  return result;
+};
+
+module.exports = { generateRandomString, findUserByEmail, urlsForUser};

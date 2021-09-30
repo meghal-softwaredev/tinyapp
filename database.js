@@ -7,6 +7,14 @@ const urlDatabase = {
   i3BoGr: {
     longURL: "https://www.google.ca",
     userID: "user2RandomID"
+  },
+  i3BoKr: {
+    longURL: "https://www.facebook.ca",
+    userID: "user2RandomID"
+  },
+  i3RoGr: {
+    longURL: "https://www.twitter.ca",
+    userID: "user2RandomID"
   }
 };
 

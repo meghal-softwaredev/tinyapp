@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const { urlDatabase, users } = require("./database");
-const { generateRandomString, findUserByEmail } = require("./helper");
+const { generateRandomString, findUserByEmail, urlsForUser } = require("./helper");
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -18,26 +18,29 @@ app.get("/", (req, res) => {
 
 //show URLs if Logged in
 app.get("/urls", (req, res) => {
-  if (!req.cookies['user_id']) return res.redirect('/login');
+  let userID = req.cookies['user_id'];
+  if (!userID) return res.status(401).render('urls_error');
+  let urls = urlsForUser(userID);
   const templateVars = { user: users[req.cookies['user_id']], 
-  urls: urlDatabase };
+  urls: urls };
   res.render("urls_index", templateVars);
 });
 
 //Route to create new URL if Logged in
 app.get("/urls/new", (req, res) => {
-  if (!req.cookies['user_id']) return res.redirect('/login');
+  if (!req.cookies['user_id']) return res.status(401).render('urls_error');
   res.render("urls_new", { user: users[req.cookies['user_id']] });
 });
 
 //After submitting new URL, if user is logged in => Entry made in urlDatabase db
 //user will be redirect
 app.post("/urls", (req, res) => {
-  if (!req.cookies['user_id']) return res.status(401).send('Unauthorized Error');
+  let userID = req.cookies['user_id'];
+  if (!userID) return res.status(401).render('urls_error');
   const shortURL =  generateRandomString();
   urlDatabase[shortURL] = {longURL: '', userID: ''};
   urlDatabase[shortURL].longURL = req.body.longURL;
-  urlDatabase[shortURL].userID = req.cookies['user_id'];
+  urlDatabase[shortURL].userID = userID;
   res.redirect(`/u/${shortURL}`);       
 });
 
@@ -53,21 +56,24 @@ app.get("/u/:shortURL", (req, res) => {
 
 //URLs Edit => render template to show Short and Long URL
 app.get("/urls/:shortURL", (req, res) => {
-  if (!req.cookies['user_id']) return res.redirect('/login');
+  let userID = req.cookies['user_id'];
+  if (!userID) return res.status(401).render('urls_error');
+  let urls = urlsForUser(userID);
   let shortURL = req.params.shortURL;
-  const templateVars = { user: users[req.cookies['user_id']], shortURL, longURL: urlDatabase[shortURL].longURL};
+  const templateVars = { user: users[userID], shortURL, longURL: urls[shortURL]};
   res.render("urls_show", templateVars);
 });
 
 //URLs Edit => update Long URL if user is logged in
 app.post("/urls/:id", (req,res) => {
-  if (!req.cookies['user_id']) return res.status(401).send('Unauthorized Error');
+  if (!req.cookies['user_id']) return res.status(401).render('urls_error');
   urlDatabase[req.params.id].longURL = req.body.newURLVal;
   res.redirect("/urls");
 });
 
 //URLs Delete => Delete URL and redirect
 app.post("/urls/:shortURL/delete", (req,res) => {
+  if (!req.cookies['user_id']) return res.status(401).render('urls_error');
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
