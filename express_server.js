@@ -1,4 +1,5 @@
 const express = require("express");
+const methodOverride = require('method-override')
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const { checkAutheticatedUser } = require('./middlewares/checkAutheticatedUser');
@@ -14,6 +15,7 @@ app.use(cookieSession({
   name: 'session',
   keys: ['Knowledge is Power', 'Time is money']
 }));
+app.use(methodOverride('_method'));
 
 //If home route => redirect to login
 app.get("/", (req, res) => {
@@ -124,13 +126,13 @@ app.get("/urls/:shortURL", checkAutheticatedUser, (req, res) => {
 });
 
 //URLs Edit => update Long URL if user is logged in
-app.post("/urls/:id", checkAutheticatedUser, (req,res) => {
+app.put("/urls/:id", checkAutheticatedUser, (req,res) => {
   urlDatabase[req.params.id].longURL = req.body.newURLVal;
   res.redirect("/urls");
 });
 
 //URLs Delete => Delete URL and redirect
-app.post("/urls/:shortURL/delete", checkAutheticatedUser, (req,res) => {
+app.delete("/urls/:shortURL/delete", checkAutheticatedUser, (req,res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });

@@ -16,7 +16,7 @@
       </div>
     <div class="card-footer text-muted">
       <h1>Edit</h1>
-      <form class="form-inline justify-content-center" method="POST" action="/urls/<%= shortURL %>">
+      <form class="form-inline justify-content-center" method="POST" action="/urls/<%= shortURL %>?_method=PUT">
         <div class="form-group">
           <label for="newURL" class="mr-2">Edit URL:</label>
           <input type="text" class="form-control" id="newURL" name="newURLVal">
