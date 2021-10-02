@@ -24,7 +24,7 @@ describe('urlsForUser', () => {
   it('should return urls for user', () => {
     const result = urlsForUser("user2RandomID");
     const expectedOutput = {
-      i3BoGr: "https://www.google.ca", 
+      i3BoGr: "https://www.google.ca",
       i3BoKr: "https://www.facebook.ca",
       i3RoGr: "https://www.twitter.ca"
     };
@@ -40,18 +40,18 @@ describe('urlsForUser', () => {
 describe('authenticateUser', () => {
   it('return error if no user found with valid email', () => {
     const result = authenticateUser("c@c.com", "abc");
-    const expectedOutput = { 
-      user: null, 
-      error: 'Wrong Credentials' 
+    const expectedOutput = {
+      user: null,
+      error: 'Wrong Credentials'
     };
     assert.deepEqual(result, expectedOutput);
   });
 
   it('return error if password mismatch', () => {
     const result = authenticateUser("a@a.com", "abc");
-    const expectedOutput = { 
-      user: null, 
-      error: 'Wrong Credentials' 
+    const expectedOutput = {
+      user: null,
+      error: 'Wrong Credentials'
     };
     assert.deepEqual(result, expectedOutput);
   });
@@ -61,7 +61,7 @@ describe('authenticateUser', () => {
     const expectedOutput = {
       user: "userRandomID",
       error: null
-    }
+    };
     assert.deepEqual(result, expectedOutput);
   });
 });
@@ -89,5 +89,5 @@ describe('validateRegistration', () => {
     const result = validateRegistration('c@c.com','bootcamp-rocks');
     let expectedOutput = { error: null };
     assert.deepEqual(result, expectedOutput);
-  })
+  });
 });

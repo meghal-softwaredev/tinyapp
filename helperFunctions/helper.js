@@ -49,5 +49,5 @@ const validateRegistration = (email, password) => {
     return { error: 'Email already exists.' };
   }
   return { error: null };
-}
+};
 module.exports = { generateRandomString, findUserByEmail, urlsForUser,authenticateUser, validateRegistration };

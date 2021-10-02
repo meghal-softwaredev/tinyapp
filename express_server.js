@@ -1,8 +1,8 @@
 const express = require("express");
-const methodOverride = require('method-override')
+const methodOverride = require('method-override');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
-const { checkAutheticatedUser } = require('./middlewares/checkAutheticatedUser');
+const { checkAuthenticatedUser, checkOwnerURL } = require('./middlewares/checkAuthenticatedUser');
 const { urlDatabase, users } = require("./database/database");
 const { generateRandomString, urlsForUser, authenticateUser, validateRegistration } = require("./helperFunctions/helper");
 const app = express();
@@ -32,13 +32,13 @@ app.post("/register", (req,res) => {
   //Extract email and password from body
   const {email, password} = req.body;
   const hashPassword = bcrypt.hashSync(password, 10);
-  let result = validateRegistration(email, password);
+  const result = validateRegistration(email, password);
   if (result.error) {
     return res.status(400).send(result.error);
   }
   //Insert new entry for user in db
-  let userId = generateRandomString();
-  users[userId] = { 
+  const userId = generateRandomString();
+  users[userId] = {
     id: userId,
     email,
     password: hashPassword
@@ -57,7 +57,7 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   //extract email and password from body
   const {email, password} = req.body;
-  let result = authenticateUser(email, password);
+  const result = authenticateUser(email, password);
   if (result.error) {
     return res.status(403).send(result.error);
   }
@@ -73,24 +73,24 @@ app.post("/logout", (req, res) => {
 });
 
 //show URLs if Logged in
-app.get("/urls", checkAutheticatedUser, (req, res) => {
-  let userID = req.session.userId;
-  let urls = urlsForUser(userID);
+app.get("/urls", checkAuthenticatedUser, (req, res) => {
+  const userID = req.session.userId;
+  const urls = urlsForUser(userID);
   const templateVars = {
     user: users[userID],
-    urls: urls
+    urls
   };
   res.render("urls_index", templateVars);
 });
 
 //Route to create new URL if user is Logged in
-app.get("/urls/new", checkAutheticatedUser, (req, res) => {
+app.get("/urls/new", checkAuthenticatedUser, (req, res) => {
   res.render("urls_new", { user: users[req.session.userId] });
 });
 
 //After submitting new URL, if user is logged in => Entry made in urlDatabase db
 //user will be redirect
-app.post("/urls", checkAutheticatedUser, (req, res) => {
+app.post("/urls", checkAuthenticatedUser, (req, res) => {
   if (req.body.longURL === '') {
     return res.status(400).send('Enter new URL');
   }
@@ -113,10 +113,10 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 //URLs Edit => render template to show Short and Long URL
-app.get("/urls/:shortURL", checkAutheticatedUser, (req, res) => {
-  let userID = req.session.userId;
-  let urls = urlsForUser(userID);
-  let shortURL = req.params.shortURL;
+app.get("/urls/:shortURL", checkAuthenticatedUser, checkOwnerURL, (req, res) => {
+  const userID = req.session.userId;
+  const shortURL = req.params.shortURL;
+  const urls = urlsForUser(userID);
   const templateVars = {
     user: users[userID],
     shortURL,
@@ -126,13 +126,13 @@ app.get("/urls/:shortURL", checkAutheticatedUser, (req, res) => {
 });
 
 //URLs Edit => update Long URL if user is logged in
-app.put("/urls/:id", checkAutheticatedUser, (req,res) => {
-  urlDatabase[req.params.id].longURL = req.body.newURLVal;
+app.put("/urls/:shortURL", checkAuthenticatedUser, checkOwnerURL, (req,res) => {
+  urlDatabase[req.params.shortURL].longURL = req.body.newURLVal;
   res.redirect("/urls");
 });
 
 //URLs Delete => Delete URL and redirect
-app.delete("/urls/:shortURL/delete", checkAutheticatedUser, (req,res) => {
+app.delete("/urls/:shortURL/delete", checkAuthenticatedUser, checkOwnerURL, (req,res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
