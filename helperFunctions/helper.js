@@ -27,7 +27,7 @@ const urlsForUser = uid => {
 };
 
 const authenticateUser = (email, password) => {
-  let userId = findUserByEmail(email);
+  const userId = findUserByEmail(email);
   //If no user found with email => Error
   if (!userId) {
     return { user: null, error: 'Wrong Credentials' };

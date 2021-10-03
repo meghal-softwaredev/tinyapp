@@ -69,25 +69,25 @@ describe('authenticateUser', () => {
 describe('validateRegistration', () => {
   it('should return error if no email provided', () => {
     const result = validateRegistration('','abc');
-    let expectedOutput = { error: 'Enter valid Email/Password' };
+    const expectedOutput = { error: 'Enter valid Email/Password' };
     assert.deepEqual(result, expectedOutput);
   });
 
   it('should return error if no password provided', () => {
     const result = validateRegistration('c@c.com','');
-    let expectedOutput = { error: 'Enter valid Email/Password' };
+    const expectedOutput = { error: 'Enter valid Email/Password' };
     assert.deepEqual(result, expectedOutput);
   });
 
   it('should return error if email already exists', () => {
     const result = validateRegistration('a@a.com','purple-monkey-dinosaur');
-    let expectedOutput = { error: 'Email already exists.' };
+    const expectedOutput = { error: 'Email already exists.' };
     assert.deepEqual(result, expectedOutput);
   });
 
   it('should return no errors if new email and password', () => {
     const result = validateRegistration('c@c.com','bootcamp-rocks');
-    let expectedOutput = { error: null };
+    const expectedOutput = { error: null };
     assert.deepEqual(result, expectedOutput);
   });
 });

@@ -106,7 +106,7 @@ app.post("/urls", checkAuthenticatedUser, (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   if (!urlDatabase.hasOwnProperty(shortURL)) {
-    return res.status(404).send('Not found');
+    return res.status(404).send('<p>URL does not exist<br><br><a href="/urls">URLs Page</a></p>');
   }
   const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
