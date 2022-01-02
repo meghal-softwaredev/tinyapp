@@ -6,7 +6,8 @@ const { checkAuthenticatedUser, checkOwnerURL } = require('./middlewares/checkAu
 const { urlDatabase, users } = require("./database/database");
 const { generateRandomString, urlsForUser, authenticateUser, validateRegistration } = require("./helperFunctions/helper");
 const app = express();
-const PORT = 8080; // default port 8080
+require('dotenv').config();
+const PORT = process.env.PORT || 5001; // default port 8080
 
 //Set view engine ejs
 app.set("view engine", "ejs");
@@ -137,7 +138,7 @@ app.delete("/urls/:shortURL/delete", checkAuthenticatedUser, checkOwnerURL, (req
   res.redirect("/urls");
 });
 
-//Server Listening to PORT 8080
+//Server Listening to PORT 5001
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
